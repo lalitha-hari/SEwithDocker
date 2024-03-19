@@ -34,4 +34,4 @@ def search_for_keyword(context):
 
 @then('the documents should be indexed')
 def documents_should_be_indexed(context):
-    assert context.results is not None
+    assert context.results != 0
