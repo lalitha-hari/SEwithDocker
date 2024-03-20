@@ -1,61 +1,60 @@
-
-from flask import Flask, request, render_template
-import csv
+from flask import Flask, request, jsonify, render_template
 from threading import Thread
 from webcrawler import WebCrawler
 from indexer import Indexer
 from ranker import Ranker
+import csv
 
 app = Flask(__name__)
 crawler = None
-
-@app.route('/', methods=['GET'])
-def index():
-    return render_template('index.html')
+indexing_complete = False  # Flag to indicate indexing status
 
 @app.route('/search', methods=['GET'])
 def search():
-    global crawler
+    global crawler, indexing_complete
     keyword = request.args.get('keyword')
     url = request.args.get('url')
     if keyword and url:
         if crawler is None:
             crawler = WebCrawler()
-        # Threading for crawling
         crawler_thread = Thread(target=crawler.crawl, args=(url,))
         crawler_thread.start()
-        
-        # Wait for the crawling to finish and then index documents
         crawler_thread.join()
         results = index_documents(keyword)
 
         if results:
-            return render_template('results.html', results=results)
+            return jsonify(results)
         else:
-            return render_template('results.html', message='Result not found for the given keyword and URL.')
+            return jsonify({'error': 'Result not found for the given keyword and URL'}), 404
     else:
-        return render_template('results.html', error='Both keyword and URL parameters are required.'), 400
-
-def index_documents(keyword):
-    indexer = Indexer()
-    indexer.index = crawler.index
-    results = indexer.search(keyword)
-    if results:
-        ranker = Ranker()
-        ranked_results = ranker.rank_results(results, indexer.index, keyword)
-        return ranked_results
-    else:
-        return None
+        return jsonify({'error': 'Both keyword and URL parameters are required'}), 400
 
 @app.route('/csvdata', methods=['GET'])
 def csv_data():
-    # Load data from CSV
     data = []
     with open('data.csv', 'r') as file:
         reader = csv.reader(file)
         for row in reader:
             data.append(row)
     return render_template('csvdata.html', data=data)
+
+@app.route('/indexing/status', methods=['GET'])
+def indexing_status():
+    global indexing_complete
+    return jsonify({'indexing_complete': indexing_complete})
+
+def index_documents(keyword):
+    global indexing_complete
+    indexer = Indexer()
+    indexer.index = crawler.index
+    results = indexer.search(keyword)
+    if results:
+        ranker = Ranker()
+        ranked_results = ranker.rank_results(results, indexer.index, keyword)
+        indexing_complete = True  # Set indexing complete flag to True
+        return ranked_results
+    else:
+        return None
 
 if __name__ == '__main__':
     app.run(debug=True)
