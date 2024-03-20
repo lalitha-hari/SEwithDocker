@@ -36,7 +36,7 @@ def csv_data():
         reader = csv.reader(file)
         for row in reader:
             data.append(row)
-    return render_template('csvdata.html', data=data)
+    return jsonify(data)
 
 @app.route('/indexing/status', methods=['GET'])
 def indexing_status():
