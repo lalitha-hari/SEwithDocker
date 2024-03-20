@@ -6,7 +6,6 @@ from ranker import Ranker
 import csv
 
 app = Flask(__name__)
-<<<<<<< HEAD
 crawler = WebCrawler()
 indexer = Indexer()
 ranker = Ranker()
@@ -15,10 +14,8 @@ ranker = Ranker()
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
-=======
 crawler = None
 indexing_complete = False  # Flag to indicate indexing status
->>>>>>> d8c5a12ac8e6b443f91108b888a5a09338bf1900
 
 @app.route('/search', methods=['GET'])
 def search():
