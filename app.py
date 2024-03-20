@@ -7,7 +7,10 @@ from indexer import Indexer
 from ranker import Ranker
 
 app = Flask(__name__)
-crawler = None
+crawler = WebCrawler()
+indexer = Indexer()
+ranker = Ranker()
+
 
 @app.route('/', methods=['GET'])
 def index():
