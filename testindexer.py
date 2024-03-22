@@ -1,5 +1,8 @@
 import unittest
-from indexer import Indexer  # Assuming your indexer code is in a file named "indexer.py"
+from indexer import (
+    Indexer,
+)  # Assuming your indexer code is in a file named "indexer.py"
+
 
 class TestIndexer(unittest.TestCase):
     def setUp(self):
@@ -13,10 +16,13 @@ class TestIndexer(unittest.TestCase):
 
     def test_search(self):
         self.indexer.index_page("http://example1.com", "Sample text with keyword")
-        self.indexer.index_page("http://example2.com", "Another sample text without keyword")
+        self.indexer.index_page(
+            "http://example2.com", "Another sample text without keyword"
+        )
         results = self.indexer.search("keyword")
         self.assertIn("http://example1.com", results)
         self.assertIn("http://example2.com", results)
+
 
 if __name__ == "__main__":
     unittest.main()

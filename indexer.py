@@ -1,6 +1,7 @@
 from collections import defaultdict
 import threading
 
+
 class Indexer:
     def __init__(self):
         self.index = defaultdict(list)
@@ -18,5 +19,3 @@ class Indexer:
                 if keyword.lower() in words:
                     results.append(url)
         return results[:10]
-
-
