@@ -17,18 +17,37 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Find run_linting.bat
+      - name: Find linting script
         run: |
-          linting_script=$(find . -name "run_linting.bat" -type f | head -n 1)
-          echo "Found linting script at: $linting_script"
-          chmod +x "$linting_script"
+          LINTING_SCRIPT=$(find . -name "run_linting.bat" -type f | head -n 1)
+          echo "::set-env name=LINTING_SCRIPT::$LINTING_SCRIPT"
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Install flake8
+        run: |
+          pip install flake8
+          pip install black
 
       - name: Run linting
-        run: $linting_script
-        continue-on-error: true
+        run: |
+          LINTING_SCRIPT="$LINTING_SCRIPT"
+          if [ -f "$LINTING_SCRIPT" ]; then
+            ./$LINTING_SCRIPT
+            if [ $? -eq 0 ]; then
+              echo "Linting issues fixed successfully."
+            else
+              echo "Fixing linting issues unsuccessful."
+            fi
+          else
+            echo "Linting script not found."
+          fi
 
       - name: Push code if linting passed
-        if: ${{ success() }}
+        if: success()
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
