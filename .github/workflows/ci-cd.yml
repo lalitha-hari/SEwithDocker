@@ -49,8 +49,8 @@ jobs:
       - name: Push code if linting passed
         if: success()
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config --local user.email "saisathwik173@gmail.com"
+          git config --local user.name "saisathwik03"
           git add .
           git commit -m "Linting issues fixed"
           git push origin main
