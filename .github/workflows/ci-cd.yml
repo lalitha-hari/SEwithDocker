@@ -30,9 +30,11 @@ jobs:
           pip install flake8
           pip install black
 
+      - name: Grant execute permission to linting script
+        run: chmod +x $LINTING_SCRIPT
+
       - name: Run linting
         run: |
-          LINTING_SCRIPT="$LINTING_SCRIPT"
           if [ -f "$LINTING_SCRIPT" ]; then
             ./$LINTING_SCRIPT
             if [ $? -eq 0 ]; then
