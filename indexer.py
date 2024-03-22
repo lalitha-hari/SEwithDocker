@@ -14,6 +14,9 @@ class Indexer:
         results = []
         with self.lock:
             for url, text in self.index.items():
-                if keyword.lower() in text.lower():
+                words = text.lower().split()  # Split text into words
+                if keyword.lower() in words:
                     results.append(url)
         return results[:10]
+
+
