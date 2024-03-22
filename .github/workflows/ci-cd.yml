@@ -22,17 +22,10 @@ jobs:
         with:
           python-version: 3.x
 
-      - name: Install Flake8 and Autopep8
+      - name: Install Black
         run: |
-          pip install flake8 autopep8
+          pip install black
 
-      - name: Run Flake8 and Autopep8
+      - name: Run Black
         run: |
-          # Run Flake8 to check for linting errors
-          flake8 --extend-ignore=E203,W503 . --max-line-length=120 --ignore=E231,E501 --select=E,F,W,C --show-source --statistics
-
-          # Run Autopep8 to automatically fix linting errors
-          autopep8 --recursive --in-place .
-
-          # Run Flake8 again to confirm that linting errors have been fixed
-          flake8 --extend-ignore=E203,W503 . --max-line-length=120 --ignore=E231,E501 --select=E,F,W,C --show-source --statistics
+          black .
