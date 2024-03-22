@@ -17,27 +17,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.x
-
-      - name: Install flake8
-        run: |
-          pip install flake8
-          pip install black
-
       - name: Find run_linting.bat
-        id: find-linting-script
         run: |
-          find . -name "run_linting.bat" -type f | head -n 1
-        continue-on-error: true
+          linting_script=$(find . -name "run_linting.bat" -type f | head -n 1)
+          echo "Found linting script at: $linting_script"
+          chmod +x "$linting_script"
 
-      - name: Run linting and fix lint issues
-        if: steps.find-linting-script.outputs.stdout
-        run: |
-          bash $(find run_linting.bat)
-        shell: bash
+      - name: Run linting
+        run: $linting_script
         continue-on-error: true
 
       - name: Push code if linting passed
