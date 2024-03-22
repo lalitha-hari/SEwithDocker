@@ -27,8 +27,17 @@ jobs:
           pip install flake8
           pip install black
 
+      - name: Find run_linting.bat
+        id: find-linting-script
+        run: |
+          find . -name "run_linting.bat" -type f | head -n 1
+        continue-on-error: true
+
       - name: Run linting and fix lint issues
-        run: .\run_linting.bat
+        if: steps.find-linting-script.outputs.stdout
+        run: |
+          bash $(find run_linting.bat)
+        shell: bash
         continue-on-error: true
 
       - name: Push code if linting passed
