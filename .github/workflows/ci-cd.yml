@@ -22,23 +22,10 @@ jobs:
         with:
           python-version: 3.x
 
-      - name: Install Black and Flake8
+      - name: Install pylint
         run: |
-          pip install black flake8
+          pip install pylint
 
-      - name: Run Black
+      - name: Run pylint
         run: |
-          black .
-
-      - name: Run Flake8
-        run: |
-          flake8 .
-
-      - name: Commit changes (optional)
-        if: failure() && github.event_name == 'push'
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git add .
-          git commit -m "Fix linting issues automatically"
-          git push
+          pylint --rcfile=.pylintrc .
