@@ -5,8 +5,8 @@ from indexer import Indexer
 from ranker import Ranker
 
 app = Flask(__name__)
-crawler =       None
-indexer =      None
+crawler = None
+indexer = None
 indexing_complete = False
 
 
