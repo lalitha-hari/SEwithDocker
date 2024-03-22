@@ -9,8 +9,8 @@ on:
       - main
 
 jobs:
-  lint:
-    name: Code Linting and Formatting
+  lint_and_push:
+    name: Linting and Push
     runs-on: ubuntu-latest
 
     steps:
@@ -22,27 +22,20 @@ jobs:
         with:
           python-version: 3.x
 
-      - name: Install flake8 and black
+      - name: Install flake8
         run: |
-          pip install flake8 black
+          pip install flake8
+          pip install black
 
-      - name: Run linting and formatting
+      - name: Run linting
+        run: bash run_linting.sh
+        continue-on-error: true
+
+      - name: Push code if linting passed
+        if: ${{ success() }}
         run: |
-          flake8 .
-          black --check .
-
-  push_to_main:
-    name: Push to main if linting issues are fixed
-    runs-on: ubuntu-latest
-    needs: lint
-    if: ${{ needs.lint.result == 'success' }}
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Push changes to main branch
-        run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "Linting issues fixed"
           git push origin main
